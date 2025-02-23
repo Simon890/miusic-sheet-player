@@ -26,4 +26,4 @@ class Triangle(Figure):
         bbox_pt2 = [np.max(all_x), min_y]
         bbox_pt3 = [np.max(all_x), np.max(all_y)]
         bbox_pt4 = [min_x, np.max(all_y)]
-        return BoundingBox(bbox_pt1, bbox_pt2, bbox_pt3, bbox_pt4)
+        return BoundingBox(bbox_pt1, bbox_pt2, bbox_pt3, bbox_pt4, Triangle.ID)

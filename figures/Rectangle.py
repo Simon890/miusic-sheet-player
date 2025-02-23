@@ -16,4 +16,4 @@ class Rectangle(Figure):
         pt3 = self._coords[1]
         pt2 = [pt3[0], pt1[1]]
         pt4 = [pt1[0], pt3[1]]
-        return BoundingBox(pt1, pt2, pt3, pt4)
+        return BoundingBox(pt1, pt2, pt3, pt4, Rectangle.ID)

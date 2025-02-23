@@ -23,4 +23,4 @@ class Circle(Figure):
         pt2 = [center_x + self._radius, center_y - self._radius]
         pt3 = [center_x + self._radius, center_y + self._radius]
         pt4 = [center_x - self._radius, center_y + self._radius]
-        return BoundingBox(pt1, pt2, pt3, pt4)
+        return BoundingBox(pt1, pt2, pt3, pt4, Circle.ID)
