@@ -6,30 +6,46 @@ from figures.BoundingBox import BoundingBox
 
 class Figure(abc.ABC):
     
-    _coords: list
+    _coords: np.ndarray
     _bbox: BoundingBox
     
-    def __init__(self, coords: list):
-        self._coords = coords
-        self._bbox = BoundingBox(self._coords)
+    def __init__(self, coords: np.ndarray):
+        self._coords = np.array(coords, dtype=np.int32)
+        self._bbox = self._build_bbox()
     
     @abc.abstractmethod
     def draw(self, img: np.ndarray):
         pass
     
     @abc.abstractmethod
-    def get_bounding_box(self) -> np.ndarray:
+    def _build_bbox(self) -> BoundingBox:
         pass
     
-    def get_bbox_center(self) -> np.ndarray:
-        pt1, pt2, pt3, pt4 = self.get_bounding_box()
-        width = np.abs(pt1[0] - pt2[0])
-        height = np.abs(pt1[1] - pt3[1])
-        return np.array([pt1[0] + width // 2, pt1[1] + height // 2], dtype=np.float32)
-    
-    def draw_bounding_box(self, img: np.ndarray) -> np.ndarray:
-        bbox_coords = self.get_bounding_box()
-        return cv2.rectangle(img, bbox_coords[0], bbox_coords[2], 100)
-    
     def collides(self, figure : Self) -> bool:
-        figure._coords
+        box2 = figure.bbox
+        box1 = self.bbox
+        x1_min, y1_min = min(box1.pt1[0], box1.pt2[0]), min(box1.pt1[1], box1.pt3[1])
+        x1_max, y1_max = max(box1.pt1[0], box1.pt2[0]), max(box1.pt1[1], box1.pt3[1])
+
+        x2_min, y2_min = min(box2.pt1[0], box2.pt2[0]), min(box2.pt1[1], box2.pt3[1])
+        x2_max, y2_max = max(box2.pt1[0], box2.pt2[0]), max(box2.pt1[1], box2.pt3[1])
+
+        return not (x1_max < x2_min or x1_min > x2_max or
+                y1_max < y2_min or y1_min > y2_max)
+        
+    @property
+    def bbox(self):
+        return self._bbox
+    
+    @bbox.setter
+    def bbox(self, value):
+        self._bbox = value
+    
+    @property
+    def coords(self):
+        return self._coords
+    
+    @coords.setter
+    def coords(self, value):
+        self._coords = value
+        self._bbox = self._build_bbox()
