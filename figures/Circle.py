@@ -5,7 +5,7 @@ from figures.BoundingBox import BoundingBox
 
 class Circle(Figure):
     _radius : int
-    ID=0
+    ID=1
     
     def __init__(self, coords, radius):
         self._radius = radius

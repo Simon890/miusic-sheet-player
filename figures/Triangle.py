@@ -4,7 +4,7 @@ import numpy as np
 from figures.BoundingBox import BoundingBox
 
 class Triangle(Figure):
-    ID=2
+    ID=3
     
     def draw(self, img):
         pt1 = self._coords[0]

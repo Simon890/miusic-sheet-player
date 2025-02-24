@@ -28,7 +28,7 @@ class Generator:
             #Random figure on image
             num_figs = np.random.randint(0, 5)
             #Random type of figures
-            class_figs = np.random.randint(0, 3, size=num_figs)
+            class_figs = np.random.randint(1, 4, size=num_figs)
             
             img = self.__gen_empty_img()
             for class_fig in class_figs:
@@ -121,9 +121,13 @@ class Generator:
     def __draw_circle(self, img: np.ndarray):
         circle = None
         exit = False
+        tries = 0
         while not exit:
             pt1 = np.random.randint(0, 129, size=2, dtype=np.int32)
             radius = np.random.randint(self.BBOX_WIDTH_MIN // 2, self.BBOX_WIDTH_MAX // 2, dtype=np.int32)
+            
+            if tries == 10:
+                return img
             
             if(pt1[0] + radius > 128 or pt1[1] + radius > 128 or pt1[0] - radius < 0 or pt1[1] - radius < 0):
                 continue
@@ -136,6 +140,7 @@ class Generator:
             if not collides:
                 exit = True
                 self.__figures.append(circle)
+            tries += 1
         img_new = circle.draw(img)
         return img_new
 
@@ -143,11 +148,14 @@ class Generator:
     def __draw_rect(self, img: np.ndarray):
         rect = None
         exit = False
+        tries = 0
         while not exit:
             pt1 = np.random.randint(0, 129, size=2, dtype=np.int32)
             pt2x = None
             pt2y = None
             
+            if tries == 10:
+                return img
             #X axis
             if(pt1[0] + self.BBOX_WIDTH_MAX > 128):
                 pt2x = np.random.randint(pt1[0] - self.BBOX_WIDTH_MAX, pt1[0] - self.BBOX_WIDTH_MIN)
@@ -171,6 +179,7 @@ class Generator:
             if not collides:
                 exit = True
                 self.__figures.append(rect)
+            tries += 1
         img_new = rect.draw(img)
         return img_new
     

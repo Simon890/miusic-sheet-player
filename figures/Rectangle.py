@@ -4,7 +4,7 @@ import numpy as np
 from figures.BoundingBox import BoundingBox
 
 class Rectangle(Figure):
-    ID=1
+    ID=2
     
     def draw(self, img : np.ndarray):
         pt1 = self._coords[0]
