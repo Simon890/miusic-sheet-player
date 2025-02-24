@@ -3,26 +3,38 @@ import numpy as np
 import matplotlib.pyplot as plt
 from figures.Circle import Circle
 from figures.Triangle import Triangle
-from trans.Rotation import Rotation
+from figures.Generator import Generator
+from model.Dataset import Dataset
+from model.Model import Model
+import tensorflow as tf
+import os
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
-img = np.ones(shape=(128, 128), dtype=np.int32) * 255
+gen = Generator()
+img = gen.generate_db(8000, 0.2)
 
-rect = Rectangle([[5, 5], [30, 30]])
-img = rect.draw(img)
-circle = Circle([[100, 100]], 5)
-# img = circle.draw(img)
-triangle = Triangle([
-    [50, 50],
-    [50, 90],
-    [120, 80]
-])
-rot = Rotation()
-rect_rotado = rot.apply(rect)
-print(rect_rotado)
-# print(circle.get_bounding_box(), circle.get_bbox_center())
-# print(triangle.get_bounding_box())
-# img = triangle.draw(img)
-# img = rect.draw_bounding_box(img)
-# print(rect.get_bounding_box())
-plt.imshow(img, cmap="gray")
-plt.show()
+ds = Dataset()
+X_train, y_train = ds.load(mode="train")
+X_test, y_test = ds.load(mode="test")
+
+X_test = X_test / 255
+X_train = X_train / 255
+
+my_model = Model()
+
+input_layer = tf.keras.layers.Input((128, 128, 1))
+output = my_model(input_layer)
+final_model = tf.keras.Model(input_layer, output)
+
+final_model.compile(
+    optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
+    loss=tf.keras.losses.mean_absolute_error,
+    metrics=[tf.keras.losses.mean_absolute_error]
+)
+final_model.fit(
+    X_train,
+    y_train,
+    validation_data=(X_test, y_test),
+    epochs=5,
+)
+final_model.save("test_model", save_format="tf")
